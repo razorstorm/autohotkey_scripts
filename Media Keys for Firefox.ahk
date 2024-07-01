@@ -10,10 +10,12 @@
     firefoxByName := WinExist("Side Window Firefox")
     firefoxByExe := WinExist("firefox.exe")
 
+    ; MsgBox(firefoxByName . firefoxByExe)  ; Debug message for window handle
+
     if (firefoxByName || firefoxByExe)  ; Check if the Netflix app window exists
     {
         WinActivate()  ; Activates the window found
-        ; Sleep(100)
+        Sleep(100)
         Send("{Space}")  ; Sends a space key press to the active window
     }
 

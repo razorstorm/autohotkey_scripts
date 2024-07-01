@@ -5,8 +5,9 @@
     activeWindow := WinActive("A")
  
     netflixWindowById := WinExist("ahk_id 5378172")
-    netflixWindow := WinExist("ahk_exe ApplicationFrameHost.exe")
+    netflixWindowByExe := WinExist("ahk_exe ApplicationFrameHost.exe")
     netflixWindowByTitle := WinExist("ahk_exact Netflix")   
+    netflixWindowBySearch := GetUWPWindow("Netflix") ; find UWP window with title "Netflix"
     byNameList := WinGetList("Netflix")
 
     titleList := ""
@@ -20,13 +21,11 @@
     }
     titleList .= "done"
 
+    ; MsgBox("netflixWindowByExe: " .  netflixWindowByExe . " netflixWindowById: " . netflixWindowById . " netflixWindowBySearch: " . netflixWindowBySearch . " titleList: " . titleList . " netflixWindowByTitle: " . netflixWindowByTitle)
 
-    ; MsgBox("netflixWindow: "  netflixWindow " netflixWindowById: " netflixWindowById " titleList: " titleList " netflixWindowByTitle: " netflixWindowByTitle)
 
-    if (netflixWindow || netflixWindowById)  ; Check if the Netflix app window exists
+    if (netflixWindowBySearch)  ; Check if the Netflix app window exists
     {
-        ; MsgBox("Discovered netflix app" )  ; Debug message for window handle
-
         WinActivate()  ; Activates the window found
         Send("{Space}")  ; Sends a space key press to the active window
 
@@ -39,21 +38,20 @@
         }
     }
 }
+
+
+GetUWPWindow(WinTitle) {
+    hwnd := 0
+    loop {
+        hwnd := DllCall("FindWindowEx", "ptr", 0, "ptr", hwnd, "str", "ApplicationFrameWindow", "ptr", 0)
+        if WinExist(hwnd) {
+            child := DllCall("FindWindowEx", "ptr", hwnd, "ptr", 0, "str", "Windows.UI.Core.CoreWindow", "ptr", 0)
+            if WinExist(WinTitle " ahk_id" child)
+                return child
+        }
+    } until !hwnd
+    return 0
+}
+
+
 return
-
-
-; ; Capture Ctrl + Space
-; ^Space::
-; {
-;     window := WinExist("ahk_id 5378172")  ; Replace 'yourApplication.exe' with the executable name of your target app
-;     if (window)  ; Check if the window exists
-;     {
-;         ;MsgBox("Found")
-;         ; ControlSend("{Space}", "ApplicationFrameInputSinkWindow1", "ahk_id " 5378172)
-;         ; Send a space directly to the window found without activating it
-;         ControlSend("{Space down}", "ApplicationFrameInputSinkWindow1", "ahk_id " 5378172)
-;         Sleep(500)
-;         ControlSend("{Space up}", "ApplicationFrameInputSinkWindow1" , "ahk_id " 5378172)
-;     }
-; }
-; return
