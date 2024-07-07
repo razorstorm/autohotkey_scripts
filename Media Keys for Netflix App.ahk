@@ -10,6 +10,8 @@
     netflixWindowBySearch := GetUWPWindow("Netflix") ; find UWP window with title "Netflix"
     byNameList := WinGetList("Netflix")
 
+    ; MsgBox(activeWindow)
+
     titleList := ""
     for index, value in byNameList
     {
@@ -34,7 +36,11 @@
         ; Restore focus to the original window
         if (WinExist("ahk_id " . activeWindow))
         {
+            ; MsgBox("window found")
             WinActivate()  ; Activates the original window
+        }
+        else {
+            ; MsgBox("window NOT found")
         }
     }
 }
